@@ -32,10 +32,8 @@ namespace library
 
     /*F+F+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
       Function: WindowProc
-
       Summary:  Defines the behavior of the window—its appearance, how
                 it interacts with the user, and so forth
-
       Args:     HWND hWnd
                   Handle to the window
                 UINT uMsg
@@ -44,7 +42,6 @@ namespace library
                   Additional data that pertains to the message
                 LPARAM lParam
                   Additional data that pertains to the message
-
       Returns:  LRESULT
                   Integer value that your program returns to Windows
     -----------------------------------------------------------------F-F*/
@@ -255,13 +252,13 @@ namespace library
 
     void CleanupDevice()
     {
-        if (g_pd3dDevice) g_pd3dDevice->Release();
-        if (g_pd3dDevice1) g_pd3dDevice1->Release();
-        if (g_pImmediateContext) g_pImmediateContext->Release();
-        if (g_pImmediateContext1) g_pImmediateContext1->Release();
-        if (g_pSwapChain) g_pSwapChain->Release();
-        if (g_pRenderTargetView) g_pRenderTargetView->Release();
-        if (pBackBuffer) pBackBuffer->Release();
+        g_pd3dDevice.Reset();
+        g_pd3dDevice1.Reset();
+        g_pImmediateContext.Reset();
+        g_pImmediateContext1.Reset();
+        g_pSwapChain.Reset();
+        g_pRenderTargetView.Reset();
+        pBackBuffer.Reset();
 
     }
 }

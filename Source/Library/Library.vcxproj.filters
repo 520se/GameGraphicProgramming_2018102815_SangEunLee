@@ -15,15 +15,23 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\게임그래픽프로그래밍(강형엽)\GameGraphicsProgrammingStarterPack-main\Lab00\Library\Common.h">
+    <ResourceCompile Include="Resource.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\게임그래픽프로그래밍(강형엽)\GameGraphicsProgrammingStarterPack-main\Lab00\Library\Game\Game.h">
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\게임그래픽프로그래밍(강형엽)\GameGraphicsProgrammingStarterPack-main\Lab00\Library\Game\Game.cpp">
+    <ClCompile Include="Game\Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

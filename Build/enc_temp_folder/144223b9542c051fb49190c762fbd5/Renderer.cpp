@@ -16,13 +16,13 @@ namespace library
     {
         m_driverType = D3D_DRIVER_TYPE_NULL;
         m_featureLevel = D3D_FEATURE_LEVEL_11_0;
-        m_d3dDevice = nullptr;
-        m_d3dDevice1 = nullptr;
-        m_immediateContext = nullptr;
-        m_immediateContext1 = nullptr;
-        m_swapChain = nullptr;
-        m_swapChain1 = nullptr;
-        m_renderTargetView = nullptr;
+        m_d3dDevice;
+        m_d3dDevice1;
+        m_immediateContext;
+        m_immediateContext1;
+        m_swapChain;
+        m_swapChain1;
+        m_renderTargetView;
     }
 
 

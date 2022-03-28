@@ -96,11 +96,11 @@ namespace library
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 
     template <class DerivedType>
-    LRESULT BaseWindow<DerivedType>::WindowProc(_In_ HWND hWnd, _In_ UINT uMsg, _In_ WPARAM wParam, _In_ LPARAM lParam)
+    LRESULT BaseWindow<DerivedType>::WindowProc(_In_ HWND hWnd, _In_ UINT uMessage, _In_ WPARAM wParam, _In_ LPARAM lParam)
     {
         DerivedType* pThis = NULL;
 
-        if (uMsg == WM_CREATE)
+        if (uMessage == WM_CREATE)
         {
             CREATESTRUCT* pCreate = (CREATESTRUCT*)lParam;
             pThis = (DerivedType*)pCreate->lpCreateParams;
@@ -114,11 +114,11 @@ namespace library
         }
         if (pThis)
         {
-            return pThis->HandleMessage(uMsg, wParam, lParam);
+            return pThis->HandleMessage(uMessage, wParam, lParam);
         }
         else
         {
-            return DefWindowProc(hWnd, uMsg, wParam, lParam);
+            return DefWindowProc(hWnd, uMessage, wParam, lParam);
         }
 
     }
@@ -199,8 +199,12 @@ namespace library
     HRESULT BaseWindow<DerivedType>::initialize(_In_ HINSTANCE hInstance, _In_ INT nCmdShow, _In_ PCWSTR pszWindowName, _In_ DWORD dwStyle,
         _In_opt_ INT x, _In_opt_ INT y, _In_opt_ INT nWidth, _In_opt_ INT nHeight, _In_opt_ HWND hWndParent, _In_opt_ HMENU hMenu)
     {
-        m_hInstance = hInstance;
-        m_pszWindowName = pszWindowName;
+        WNDCLASS wc = { 0 };
+        wc.lpfnWndProc = DerivedType::WindowProc;
+        wc.hInstance = GetModuleHandle(NULL);
+        wc.lpszClassName = GetWindowClassName();
+
+        RegisterClass(&wc);
 
         m_hWnd = CreateWindowEx(0, GetWindowClassName(), pszWindowName, dwStyle, x, y, nWidth, nHeight, hWndParent, hMenu, hInstance, this);
 

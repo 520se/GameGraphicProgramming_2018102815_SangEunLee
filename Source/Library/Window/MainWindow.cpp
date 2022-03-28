@@ -62,11 +62,11 @@ namespace library
                   Integer value that your program returns to Windows
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 
-    LRESULT MainWindow::HandleMessage(_In_ UINT uMsg, _In_ WPARAM wParam, _In_ LPARAM lParam)
+    LRESULT MainWindow::HandleMessage(_In_ UINT uMessage, _In_ WPARAM wParam, _In_ LPARAM lParam)
     {
         PAINTSTRUCT ps;
         HDC hdc;
-        switch (uMsg)
+        switch (uMessage)
         {
         case WM_PAINT:
             hdc = BeginPaint(m_hWnd, &ps);
@@ -78,7 +78,7 @@ namespace library
             break;
 
         default:
-            return DefWindowProc(m_hWnd, uMsg, wParam, lParam);
+            return DefWindowProc(m_hWnd, uMessage, wParam, lParam);
         }
         return 0;
     }

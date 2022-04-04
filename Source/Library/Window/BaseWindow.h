@@ -94,13 +94,10 @@ namespace library
         Returns:  LRESULT
                     Integer value that your program returns to Windows
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-    /*--------------------------------------------------------------------
-      TODO: BaseWindow<DerivedType>::WindowProc definition (remove the comment)
-    --------------------------------------------------------------------*/
     template <class DerivedType>
     LRESULT BaseWindow<DerivedType>::WindowProc(_In_ HWND hWnd, _In_ UINT uMessage, _In_ WPARAM wParam, _In_ LPARAM lParam)
     {
-        DerivedType* pThis = NULL;
+        DerivedType* pThis = nullptr;
 
         if (uMessage == WM_CREATE)
         {
@@ -122,8 +119,8 @@ namespace library
         {
             return DefWindowProc(hWnd, uMessage, wParam, lParam);
         }
-
     }
+
     /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
         Method:   BaseWindow<DerivedType>::BaseWindow
 
@@ -131,9 +128,6 @@ namespace library
 
         Modifies: [m_hInstance, m_hWnd, m_pszWindowName].
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-    /*--------------------------------------------------------------------
-      TODO: BaseWindow<DerivedType>::BaseWindow definition (remove the comment)
-    --------------------------------------------------------------------*/
     template <class DerivedType>
     BaseWindow<DerivedType>::BaseWindow()
     {
@@ -150,9 +144,6 @@ namespace library
         Returns:  HWND
                     The handle to the window
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-    /*--------------------------------------------------------------------
-      TODO: BaseWindow<DerivedType>::GetWindow definition (remove the comment)
-    --------------------------------------------------------------------*/
     template <class DerivedType>
     HWND BaseWindow<DerivedType>::GetWindow() const
     {
@@ -193,9 +184,6 @@ namespace library
       Returns:  HRESULT
                   Status code
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-    /*--------------------------------------------------------------------
-      TODO: BaseWindow<DerivedType>::initialize definition (remove the comment)
-    --------------------------------------------------------------------*/
     template <class DerivedType>
     HRESULT BaseWindow<DerivedType>::initialize(_In_ HINSTANCE hInstance, _In_ INT nCmdShow, _In_ PCWSTR pszWindowName, _In_ DWORD dwStyle,
         _In_opt_ INT x, _In_opt_ INT y, _In_opt_ INT nWidth, _In_opt_ INT nHeight, _In_opt_ HWND hWndParent, _In_opt_ HMENU hMenu)

@@ -130,8 +130,12 @@ copy "$(TargetDir)" "$(SolutionDir)..\Library\x64\Release"</Command>
     <None Include="Shaders\Lab03.fxh" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shaders\Lab03_PS.hlsl" />
-    <FxCompile Include="Shaders\Lab03_VS.hlsl" />
+    <FxCompile Include="Shaders\Lab03_PS.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PS</EntryPointName>
+    </FxCompile>
+    <FxCompile Include="Shaders\Lab03_VS.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">VS</EntryPointName>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

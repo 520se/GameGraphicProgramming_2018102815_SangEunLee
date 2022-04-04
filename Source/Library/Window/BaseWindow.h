@@ -94,7 +94,9 @@ namespace library
         Returns:  LRESULT
                     Integer value that your program returns to Windows
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-
+    /*--------------------------------------------------------------------
+      TODO: BaseWindow<DerivedType>::WindowProc definition (remove the comment)
+    --------------------------------------------------------------------*/
     template <class DerivedType>
     LRESULT BaseWindow<DerivedType>::WindowProc(_In_ HWND hWnd, _In_ UINT uMessage, _In_ WPARAM wParam, _In_ LPARAM lParam)
     {
@@ -122,7 +124,6 @@ namespace library
         }
 
     }
-
     /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
         Method:   BaseWindow<DerivedType>::BaseWindow
 

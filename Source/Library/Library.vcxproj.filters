@@ -50,4 +50,17 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\Lab03.fxh">
+      <Filter>Header Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shaders\Lab03_PS.hlsl">
+      <Filter>Header Files</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\Lab03_VS.hlsl">
+      <Filter>Header Files</Filter>
+    </FxCompile>
+  </ItemGroup>
 </Project>

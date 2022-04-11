@@ -18,6 +18,8 @@ namespace library
       Returns:  HRESULT
                   Status code
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+    //TODO
+
     HRESULT MainWindow::Initialize(_In_ HINSTANCE hInstance, _In_ INT nCmdShow, _In_ PCWSTR pszWindowName)
     {
         HRESULT hr = initialize(hInstance, nCmdShow, pszWindowName, WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
@@ -39,6 +41,7 @@ namespace library
       Returns:  PCWSTR
                   Name of the window class
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+    
     PCWSTR MainWindow::GetWindowClassName() const
     {
         return L"Graphics";
@@ -59,6 +62,7 @@ namespace library
       Returns:  LRESULT
                   Integer value that your program returns to Windows
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+    
     LRESULT MainWindow::HandleMessage(_In_ UINT uMessage, _In_ WPARAM wParam, _In_ LPARAM lParam)
     {
         PAINTSTRUCT ps;

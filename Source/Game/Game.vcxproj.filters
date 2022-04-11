@@ -15,7 +15,34 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Shaders\PS.hlsl">
+      <Filter>Header Files</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\VS.hlsl">
+      <Filter>Header Files</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\Shaders.fxh">
+      <Filter>Header Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Cube\BaseCube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube\SunCube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Cube\BaseCube.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Cube\SunCube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

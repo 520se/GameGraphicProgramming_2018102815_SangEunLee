@@ -83,7 +83,7 @@ namespace library
         ClientToScreen(m_hWnd, &p2);
 
         rc.left = p1.x;
-        rc.top = p1.y;
+        rc.top = p1.y - 30;
         rc.right = p2.x;
         rc.bottom = p2.y;
 

@@ -31,7 +31,10 @@
     <ClInclude Include="Cube\BaseCube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Cube\SunCube.h">
+    <ClInclude Include="Cube\CenterCube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube\SideCube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -42,7 +45,10 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Cube\SunCube.cpp">
+    <ClCompile Include="Cube\CenterCube.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Cube\SideCube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

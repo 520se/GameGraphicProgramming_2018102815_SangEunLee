@@ -29,11 +29,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cube\BaseCube.h" />
-    <ClInclude Include="Cube\SunCube.h" />
+    <ClInclude Include="Cube\CenterCube.h" />
+    <ClInclude Include="Cube\SideCube.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Cube\BaseCube.cpp" />
-    <ClCompile Include="Cube\SunCube.cpp" />
+    <ClCompile Include="Cube\CenterCube.cpp" />
+    <ClCompile Include="Cube\SideCube.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

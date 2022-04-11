@@ -239,39 +239,46 @@ namespace library
 
         m_immediateContext->RSSetViewports(1, &vp);
 
-        // Initialize the view matrix
+        for (auto it = m_pixelShaders.begin(); it != m_pixelShaders.end(); it++) {
+            hr = it->second->Initialize(m_d3dDevice.Get());
 
+            if (FAILED(hr))
+            {
+                return hr;
+            }
+        }
+
+        for (auto it = m_vertexShaders.begin(); it != m_vertexShaders.end(); it++) {
+            hr = it->second->Initialize(m_d3dDevice.Get());
+
+            if (FAILED(hr))
+            {
+                return hr;
+            }
+        }
+
+        for (auto it = m_renderables.begin(); it != m_renderables.end(); it++) {
+            hr = it->second->Initialize(m_d3dDevice.Get(), m_immediateContext.Get());
+
+            if (FAILED(hr))
+            {
+                return hr;
+            }
+        }
+        
+
+        // Set primitive topology
+        m_immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+        // Initialize the view matrix
+        XMVECTOR eye = XMVectorSet(0.0f, 1.0f, -5.0f, 0.0f);
+        XMVECTOR at = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+        XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+        XMMATRIX V = XMMatrixLookAtLH(eye, at, up);
+        m_view = V;
 
         // Initialize the projection matrix
         m_projection = XMMatrixPerspectiveFovLH(XM_PIDIV2, width / (FLOAT)height, 0.01f, 100.0f);
-
-        for (auto iterator = m_pixelShaders.begin(); iterator != m_pixelShaders.end(); ++iterator) {
-            hr = iterator->second->Initialize(m_d3dDevice.Get());
-
-            if (FAILED(hr))
-            {
-                return hr;
-            }
-        }
-
-        for (auto iterator = m_vertexShaders.begin(); iterator != m_vertexShaders.end(); ++iterator) {
-            hr = iterator->second->Initialize(m_d3dDevice.Get());
-
-            if (FAILED(hr))
-            {
-                return hr;
-            }
-        }
-
-        for (auto iterator = m_renderables.begin(); iterator != m_renderables.end(); ++iterator) {
-            hr = iterator->second->Initialize(m_d3dDevice.Get(), m_immediateContext.Get());
-
-            if (FAILED(hr))
-            {
-                return hr;
-            }
-        }
-        m_immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
         return S_OK;
     }

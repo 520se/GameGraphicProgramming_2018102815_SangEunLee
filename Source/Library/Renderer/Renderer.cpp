@@ -8,11 +8,10 @@ namespace library
       Summary:  Constructor
 
       Modifies: [m_driverType, m_featureLevel, m_d3dDevice, m_d3dDevice1,
-                  m_immediateContext, m_immediateContext1, m_swapChain,
-                  m_swapChain1, m_renderTargetView, m_vertexShader,
-                  m_pixelShader, m_vertexLayout, m_vertexBuffer].
+                 m_immediateContext, m_immediateContext1, m_swapChain,
+                 m_swapChain1, m_renderTargetView, m_vertexShader,
+                 m_pixelShader, m_vertexLayout, m_vertexBuffer].
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-    
     Renderer::Renderer()
         : m_driverType(D3D_DRIVER_TYPE_NULL)
         , m_featureLevel(D3D_FEATURE_LEVEL_11_0)
@@ -24,6 +23,8 @@ namespace library
         , m_swapChain1(nullptr)
         , m_renderTargetView(nullptr)
         , m_depthStencil(nullptr)
+        , m_projection()
+        , m_camera({0.f, -1.5f, 0.f, 0.f})
         , m_renderables(std::unordered_map<PCWSTR, std::shared_ptr<Renderable>>())
         , m_vertexShaders(std::unordered_map<PCWSTR, std::shared_ptr<VertexShader>>())
         , m_pixelShaders(std::unordered_map<PCWSTR, std::shared_ptr<PixelShader>>())
@@ -38,18 +39,16 @@ namespace library
                   Handle to the window
 
       Modifies: [m_d3dDevice, m_featureLevel, m_immediateContext,
-                  m_d3dDevice1, m_immediateContext1, m_swapChain1,
-                  m_swapChain, m_renderTargetView, m_vertexShader,
-                  m_vertexLayout, m_pixelShader, m_vertexBuffer].
+                 m_d3dDevice1, m_immediateContext1, m_swapChain1,
+                 m_swapChain, m_renderTargetView, m_vertexShader,
+                 m_vertexLayout, m_pixelShader, m_vertexBuffer].
 
       Returns:  HRESULT
                   Status code
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-    //TODO
     HRESULT Renderer::Initialize(_In_ HWND hWnd)
     {
         HRESULT hr = S_OK;
-
         RECT rc;
 
         GetClientRect(hWnd, &rc);
@@ -90,19 +89,24 @@ namespace library
             }
 
             if (SUCCEEDED(hr))
+            {
                 break;
+            }
+                
         }
         if (FAILED(hr))
-            return hr;
-
-        // Obtain DXGI factory from device (since we used nullptr for pAdapter above)
-        ComPtr<IDXGIFactory1>           dxgiFactory(nullptr);
         {
-            ComPtr<IDXGIDevice>           dxgiDevice(nullptr);
+            return hr;
+        }
+            
+        // Obtain DXGI factory from device (since we used nullptr for pAdapter above)
+        ComPtr<IDXGIFactory1> dxgiFactory(nullptr);
+        {
+            ComPtr<IDXGIDevice> dxgiDevice(nullptr);
             hr = m_d3dDevice.As(&dxgiDevice);
             if (SUCCEEDED(hr))
             {
-                ComPtr<IDXGIAdapter>           adapter(nullptr);
+                ComPtr<IDXGIAdapter> adapter(nullptr);
 
                 hr = dxgiDevice->GetAdapter(adapter.GetAddressOf());
                 if (SUCCEEDED(hr))
@@ -112,10 +116,12 @@ namespace library
             }
         }
         if (FAILED(hr))
+        {
             return hr;
-
+        }
+            
         // Create swap chain
-        ComPtr<IDXGIFactory2>           dxgiFactory2(nullptr);
+        ComPtr<IDXGIFactory2> dxgiFactory2(nullptr);
         hr = dxgiFactory.As(&dxgiFactory2);
         if (dxgiFactory2)
         {
@@ -131,11 +137,7 @@ namespace library
                 .Width = width,
                 .Height = height,
                 .Format = DXGI_FORMAT_R8G8B8A8_UNORM,
-                .SampleDesc =
-                {
-                    .Count = 1,
-                    .Quality = 0
-                },
+                .SampleDesc = {.Count = 1, .Quality = 0},   
                 .BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT,
                 .BufferCount = 1
             };
@@ -155,18 +157,10 @@ namespace library
                 {
                     .Width = width,
                     .Height = height,
-                    .RefreshRate =
-                    {
-                        .Numerator = 60,
-                        .Denominator = 1
-                    },
+                    .RefreshRate = {.Numerator = 60, .Denominator = 1},
                     .Format = DXGI_FORMAT_R8G8B8A8_UNORM,
                 },
-                .SampleDesc =
-                {
-                    .Count = 1,
-                    .Quality = 1,
-                },
+                .SampleDesc = {.Count = 1, .Quality = 1},
                 .BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT,
                 .BufferCount = 1,
                 .OutputWindow = hWnd,
@@ -176,24 +170,30 @@ namespace library
             hr = dxgiFactory->CreateSwapChain(m_d3dDevice.Get(), &sd, m_swapChain.GetAddressOf());
         }
 
-        // Note this tutorial doesn't handle full-screen swapchains so we block the ALT+ENTER shortcut
         dxgiFactory->MakeWindowAssociation(hWnd, DXGI_MWA_NO_ALT_ENTER);
 
 
         if (FAILED(hr))
+        {
             return hr;
+        }
 
         // Create a render target view
-        ComPtr<ID3D11Texture2D>           pBackBuffer(nullptr);
+        ComPtr<ID3D11Texture2D> pBackBuffer(nullptr);
 
         hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (&pBackBuffer));
         if (FAILED(hr))
+        {
             return hr;
+        }
 
         hr = m_d3dDevice->CreateRenderTargetView(pBackBuffer.Get(), nullptr, m_renderTargetView.GetAddressOf());
         if (FAILED(hr))
+        {
             return hr;
+        }
 
+        // Create a depth stencil texture 
         D3D11_TEXTURE2D_DESC descDepth =
         {
             .Width = width,
@@ -201,7 +201,7 @@ namespace library
             .MipLevels = 1,
             .ArraySize = 1,
             .Format = DXGI_FORMAT_D24_UNORM_S8_UINT,
-            .SampleDesc = {.Count = 1, .Quality = 0 },
+            .SampleDesc = {.Count = 1, .Quality = 0},
             .Usage = D3D11_USAGE_DEFAULT,
             .BindFlags = D3D11_BIND_DEPTH_STENCIL,
             .CPUAccessFlags = 0,
@@ -210,7 +210,9 @@ namespace library
 
         hr = m_d3dDevice->CreateTexture2D(&descDepth, nullptr, m_depthStencil.GetAddressOf());
         if (FAILED(hr))
+        {
             return hr;
+        }
 
         // Create the depth stencil view
         D3D11_DEPTH_STENCIL_VIEW_DESC descDSV =
@@ -222,7 +224,9 @@ namespace library
 
         hr = m_d3dDevice->CreateDepthStencilView(m_depthStencil.Get(), &descDSV, m_depthStencilView.GetAddressOf());
         if (FAILED(hr))
+        {
             return hr;
+        }
 
         m_immediateContext->OMSetRenderTargets(1, m_renderTargetView.GetAddressOf(), m_depthStencilView.Get());
 
@@ -265,17 +269,17 @@ namespace library
                 return hr;
             }
         }
-        
+
 
         // Set primitive topology
         m_immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
         // Initialize the view matrix
-        XMVECTOR eye = XMVectorSet(0.0f, 1.0f, -5.0f, 0.0f);
+        /*XMVECTOR eye = XMVectorSet(0.0f, 1.0f, -5.0f, 0.0f);
         XMVECTOR at = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
         XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-        XMMATRIX V = XMMatrixLookAtLH(eye, at, up);
-        m_view = V;
+        XMMATRIX V = XMMatrixLookAtLH(eye, at, up);*/
+
 
         // Initialize the projection matrix
         m_projection = XMMatrixPerspectiveFovLH(XM_PIDIV2, width / (FLOAT)height, 0.01f, 100.0f);
@@ -306,15 +310,15 @@ namespace library
         {
             return E_FAIL;
         }
-        
+
         // Else, add the renderable and return S_OK
         else
         {
             m_renderables.insert(std::make_pair(pszRenderableName, renderable));
             return S_OK;
         }
-            
     }
+
     /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
       Method:   Renderer::AddVertexShader
 
@@ -381,6 +385,29 @@ namespace library
         }
 
     }
+
+    /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+      Method:   Renderer::HandleInput
+
+      Summary:  Add the pixel shader into the renderer and initialize it
+
+      Args:     const DirectionsInput& directions
+                  Data structure containing keyboard input data
+                const MouseRelativeMovement& mouseRelativeMovement
+                  Data structure containing mouse relative input data
+
+      Modifies: [m_camera].
+    M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+    void Renderer::HandleInput(_In_ const DirectionsInput& directions,
+        _In_ const MouseRelativeMovement& mouseRelativeMovement, _In_ FLOAT deltaTime)
+    {
+        m_camera.HandleInput(
+            directions,
+            mouseRelativeMovement,
+            deltaTime
+        );
+    }
+
     /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
       Method:   Renderer::Update
 
@@ -411,7 +438,7 @@ namespace library
         // Clear the depth buffer to 1.0 (maximum depth)
         m_immediateContext->ClearDepthStencilView(m_depthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-        
+
         for (auto it = m_renderables.begin(); it != m_renderables.end(); it++)
         {
             // Set the vertex buffer
@@ -428,17 +455,17 @@ namespace library
             // Update constant buffer for the first cube
             ConstantBuffer cb1;
             cb1.World = XMMatrixTranspose(it->second->GetWorldMatrix());
-            cb1.View = XMMatrixTranspose(m_view);
+            cb1.View = XMMatrixTranspose(m_camera.GetView());
             cb1.Projection = XMMatrixTranspose(m_projection);
 
             m_immediateContext->UpdateSubresource(it->second->GetConstantBuffer().Get(), 0, nullptr, &cb1, 0, 0);
-       
+
             // Render the triangles (cube)
             m_immediateContext->VSSetShader(it->second->GetVertexShader().Get(), nullptr, 0);
             m_immediateContext->VSSetConstantBuffers(0, 1, it->second->GetConstantBuffer().GetAddressOf());
             m_immediateContext->PSSetShader(it->second->GetPixelShader().Get(), nullptr, 0);
             m_immediateContext->DrawIndexed(it->second->GetNumIndices(), 0, 0);
-            
+
         }
         // Present the information rendered to the back buffer to the front buffer
         m_swapChain->Present(0, 0);

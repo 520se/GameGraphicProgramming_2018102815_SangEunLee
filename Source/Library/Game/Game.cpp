@@ -12,7 +12,6 @@ namespace library
 
       Modifies: [m_pszGameName, m_mainWindow, m_renderer].
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-
     Game::Game(_In_ PCWSTR pszGameName)
     {
         m_pszGameName = pszGameName;
@@ -28,7 +27,7 @@ namespace library
 
       Args:     HINSTANCE hInstance
                   Handle to the instance
-                INT nCmdShow
+              INT nCmdShow
                   Is a flag that says whether the main application window
                   will be minimized, maximized, or shown normally
 
@@ -37,7 +36,6 @@ namespace library
       Returns:  HRESULT
                   Status code
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-
     HRESULT Game::Initialize(_In_ HINSTANCE hInstance, _In_ INT nCmdShow)
     {
         HRESULT hr = m_mainWindow->Initialize(hInstance, nCmdShow, m_pszGameName);
@@ -65,16 +63,15 @@ namespace library
       Returns:  INT
                   Status code to return to the operating system
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-    //TODO
-
     INT Game::Run()
     {
-        LARGE_INTEGER StartingTime, EndingTime;
+        LARGE_INTEGER StartTime;
+        LARGE_INTEGER EndTime;
         LARGE_INTEGER Frequency;
         FLOAT DeltaTime = 0.0f;
 
         QueryPerformanceFrequency(&Frequency);
-        QueryPerformanceCounter(&StartingTime);
+        QueryPerformanceCounter(&StartTime);
 
         MSG msg = { 0 };
         while (WM_QUIT != msg.message)
@@ -86,15 +83,19 @@ namespace library
             }
             else
             {
-                QueryPerformanceCounter(&EndingTime);
-                DeltaTime = (EndingTime.QuadPart - StartingTime.QuadPart) / (float)Frequency.QuadPart;
+                QueryPerformanceCounter(&EndTime);
+                DeltaTime = (EndTime.QuadPart - StartTime.QuadPart) / (float)Frequency.QuadPart;
 
-                //update game - update the renderer - renderer updates the renderables
+                QueryPerformanceCounter(&StartTime);
+
+                m_renderer->HandleInput(
+                    m_mainWindow->GetDirections(),
+                    m_mainWindow->GetMouseRelativeMovement(),
+                    DeltaTime
+                );
+                m_mainWindow->ResetMouseMovement();
+
                 GetRenderer()->Update(DeltaTime);
-
-                QueryPerformanceCounter(&StartingTime);
-
-                //render game
                 GetRenderer()->Render();
             }
         }
@@ -110,7 +111,6 @@ namespace library
       Returns:  PCWSTR
                   Name of the game
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-
     PCWSTR Game::GetGameName() const
     {
         return m_pszGameName;

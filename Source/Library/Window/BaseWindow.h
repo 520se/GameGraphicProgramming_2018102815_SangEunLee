@@ -6,7 +6,7 @@
 
   Classes: BaseWindow<DerivedType>
 
-  © 2022 Kyung Hee University
+  � 2022 Kyung Hee University
 ===================================================================+*/
 #pragma once
 
@@ -24,17 +24,17 @@ namespace library
                 Initialize
                     Purely virtual function that initializes window
                 GetWindowClassName
-                    Purely virtual function that returns the name of 
+                    Purely virtual function that returns the name of
                     the window class
                 HandleMessage
-                    Purely virtual function that that handles the 
+                    Purely virtual function that that handles the
                     messages
                 GetWindow
-                    Getter for the handle to the window
+                  Getter for the handle to the window
                 BaseWindow
-                    Constructor.
+                  Constructor.
                 ~BaseWindow
-                    Destructor.
+                  Destructor.
     C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C-C*/
     template <class DerivedType>
     class BaseWindow
@@ -75,26 +75,25 @@ namespace library
     };
 
     /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
-        Method:   BaseWindow<DerivedType>::WindowProc
+      Method:   BaseWindow<DerivedType>::WindowProc
 
-        Summary:  Defines the behavior of the window—its appearance, how
+      Summary:  Defines the behavior of the window�its appearance, how
                 it interacts with the user, and so forth
 
-        Args:     HWND hWnd
-                    Handle to the window
+      Args:     HWND hWnd
+                  Handle to the window
                 UINT uMessage
-                    Message code
+                  Message code
                 WPARAM wParam
-                    Additional data the pertains to the message
+                  Additional data the pertains to the message
                 LPARAM lParam
-                    Additional data the pertains to the message
+                  Additional data the pertains to the message
 
-        Modifies: [m_hWnd].
+      Modifies: [m_hWnd].
 
-        Returns:  LRESULT
-                    Integer value that your program returns to Windows
+      Returns:  LRESULT
+                  Integer value that your program returns to Windows
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-    
     template <class DerivedType>
     LRESULT BaseWindow<DerivedType>::WindowProc(_In_ HWND hWnd, _In_ UINT uMessage, _In_ WPARAM wParam, _In_ LPARAM lParam)
     {
@@ -123,13 +122,12 @@ namespace library
     }
 
     /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
-        Method:   BaseWindow<DerivedType>::BaseWindow
+      Method:   BaseWindow<DerivedType>::BaseWindow
 
-        Summary:  Constructor
+      Summary:  Constructor
 
-        Modifies: [m_hInstance, m_hWnd, m_pszWindowName].
+      Modifies: [m_hInstance, m_hWnd, m_pszWindowName].
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-    
     template <class DerivedType>
     BaseWindow<DerivedType>::BaseWindow()
     {
@@ -139,14 +137,13 @@ namespace library
     }
 
     /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
-        Method:   BaseWindow<DerivedType>::GetWindow()
+      Method:   BaseWindow<DerivedType>::GetWindow
 
-        Summary:  Returns the handle to the window
+      Summary:  Returns the handle to the window
 
-        Returns:  HWND
-                    The handle to the window
+      Returns:  HWND
+                  The handle to the window
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-    
     template <class DerivedType>
     HWND BaseWindow<DerivedType>::GetWindow() const
     {
@@ -179,7 +176,7 @@ namespace library
                   A handle to the parent or owner window of the window
                   being created
                 HMENU hMenu
-                  A handle to a menu, or specifies a child-window 
+                  A handle to a menu, or specifies a child-window
                   identifier depending on the window style
 
       Modifies: [m_hInstance, m_pszWindowName, m_hWnd].
@@ -187,7 +184,6 @@ namespace library
       Returns:  HRESULT
                   Status code
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-    
     template <class DerivedType>
     HRESULT BaseWindow<DerivedType>::initialize(_In_ HINSTANCE hInstance, _In_ INT nCmdShow, _In_ PCWSTR pszWindowName, _In_ DWORD dwStyle,
         _In_opt_ INT x, _In_opt_ INT y, _In_opt_ INT nWidth, _In_opt_ INT nHeight, _In_opt_ HWND hWndParent, _In_opt_ HMENU hMenu)

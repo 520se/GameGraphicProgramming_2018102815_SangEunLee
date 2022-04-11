@@ -15,6 +15,7 @@
 
 #include "Cube/CenterCube.h"
 #include "Cube/SideCube.h"
+#include "Cube/MyCube.h"
 #include "Game/Game.h"
 
 
@@ -66,8 +67,6 @@ INT WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     
     // Add yout cubes and set their shaders
     std::shared_ptr<CenterCube> centerCube = std::make_shared<CenterCube>();
-    std::shared_ptr<SideCube> sideCube = std::make_shared<SideCube>();
-
     if (FAILED(game->GetRenderer()->AddRenderable(L"CenterCube", centerCube)))
     {
         return 0;
@@ -83,6 +82,7 @@ INT WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         return 0;
     };
 
+    std::shared_ptr<SideCube> sideCube = std::make_shared<SideCube>();
     if (FAILED(game->GetRenderer()->AddRenderable(L"SideCube", sideCube)))
     {
         return 0;
@@ -94,6 +94,22 @@ INT WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     };
 
     if (FAILED(game->GetRenderer()->SetPixelShaderOfRenderable(L"SideCube", L"MainShader")))
+    {
+        return 0;
+    };
+
+    std::shared_ptr<MyCube> myCube = std::make_shared<MyCube>();
+    if (FAILED(game->GetRenderer()->AddRenderable(L"MyCube", myCube)))
+    {
+        return 0;
+    }
+
+    if (FAILED(game->GetRenderer()->SetVertexShaderOfRenderable(L"MyCube", L"MainShader")))
+    {
+        return 0;
+    };
+
+    if (FAILED(game->GetRenderer()->SetPixelShaderOfRenderable(L"MyCube", L"MainShader")))
     {
         return 0;
     };

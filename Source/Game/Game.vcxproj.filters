@@ -37,6 +37,9 @@
     <ClInclude Include="Cube\SideCube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Cube\MyCube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Cube\BaseCube.cpp">
@@ -49,6 +52,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Cube\SideCube.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Cube\MyCube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

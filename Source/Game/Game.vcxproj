@@ -30,11 +30,13 @@
   <ItemGroup>
     <ClInclude Include="Cube\BaseCube.h" />
     <ClInclude Include="Cube\CenterCube.h" />
+    <ClInclude Include="Cube\MyCube.h" />
     <ClInclude Include="Cube\SideCube.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Cube\BaseCube.cpp" />
     <ClCompile Include="Cube\CenterCube.cpp" />
+    <ClCompile Include="Cube\MyCube.cpp" />
     <ClCompile Include="Cube\SideCube.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>

@@ -3,10 +3,10 @@
 #include "BaseCube.h"
 
 
-class SideCube : public BaseCube
+class MyCube : public BaseCube
 {
 public:
-	SideCube() = default;
+	MyCube() = default;
 
 	virtual void Update(_In_ FLOAT deltaTime) override;
 

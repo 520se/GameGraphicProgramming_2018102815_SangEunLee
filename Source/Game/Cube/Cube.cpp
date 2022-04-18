@@ -8,14 +8,13 @@
   Args:     const std::filesystem::path& textureFilePath
               Path to the texture to use
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-/*--------------------------------------------------------------------
-  TODO: Cube::Cube definition (remove the comment)
---------------------------------------------------------------------*/
-Cube::Cube(const std::filesystem::path& textureFilePath)
-    : BaseCube(textureFilePath)
-{
 
-}
+Cube::Cube(const std::filesystem::path& textureFilePath)
+    : BaseCube(textureFilePath) {}
+
+AnotherCube::AnotherCube(const std::filesystem::path& textureFilePath)
+    : BaseCube(textureFilePath) {}
+
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
   Method:   Cube::Update
@@ -34,3 +33,12 @@ void Cube::Update(_In_ FLOAT deltaTime)
 
     m_world = XMMatrixTranslation(0.0f, XMScalarSin(s_totalTime), 0.0f) * XMMatrixRotationY(s_totalTime);
 }
+
+void AnotherCube::Update(_In_ FLOAT deltaTime)
+{
+    static FLOAT s_totalTime = 0.0f;
+    s_totalTime += deltaTime;
+
+    m_world = XMMatrixTranslation(0.0f, XMScalarSin(s_totalTime), 3.0f) * XMMatrixRotationY(s_totalTime);
+}
+

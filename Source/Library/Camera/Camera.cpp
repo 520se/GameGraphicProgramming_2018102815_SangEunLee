@@ -149,23 +149,19 @@ namespace library
 
         float rotateSpeed = m_rotationSpeed * deltaTime;
 
-        if (mouseRelativeMovement.X != 0) {
-            m_yaw += mouseRelativeMovement.X * rotateSpeed;
+        m_yaw += (FLOAT)mouseRelativeMovement.X * m_rotationSpeed * deltaTime;
+        m_pitch += (FLOAT)mouseRelativeMovement.Y * m_rotationSpeed * deltaTime;
+
+        if (m_pitch > XM_PIDIV2)
+        {
+            m_pitch = XM_PIDIV2;
         }
-        if (mouseRelativeMovement.Y != 0) {
-            m_pitch += mouseRelativeMovement.Y * rotateSpeed;
 
-            if (m_pitch > XM_PIDIV2) // pitch's range : (-pi/2, pi/2
-            {
-                m_pitch = XM_PIDIV2;
-            }
-
-            else if (m_pitch < -XM_PIDIV2)
-            {
-                m_pitch = -XM_PIDIV2;
-            }
-
+        else if (m_pitch < -XM_PIDIV2)
+        {
+            m_pitch = -XM_PIDIV2;
         }
+
         Update(deltaTime);
 
         return;

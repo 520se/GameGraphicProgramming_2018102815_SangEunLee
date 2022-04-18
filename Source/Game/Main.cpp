@@ -16,6 +16,7 @@
 #include <memory>
 #include <source_location>
 
+#include "Cube/SideCube.h"
 #include "Cube/Cube.h"
 #include "Game/Game.h"
 
@@ -74,6 +75,22 @@ INT WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     }
 
     if (FAILED(game->GetRenderer()->SetPixelShaderOfRenderable(L"Cube", L"MainShader")))
+    {
+        return 0;
+    }
+
+    std::shared_ptr<AnotherCube> anothercube = std::make_shared<AnotherCube>("dirt.dds");
+    if (FAILED(game->GetRenderer()->AddRenderable(L"AnotherCube", anothercube)))
+    {
+        return 0;
+    }
+
+    if (FAILED(game->GetRenderer()->SetVertexShaderOfRenderable(L"AnotherCube", L"MainShader")))
+    {
+        return 0;
+    }
+
+    if (FAILED(game->GetRenderer()->SetPixelShaderOfRenderable(L"AnotherCube", L"MainShader")))
     {
         return 0;
     }

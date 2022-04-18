@@ -39,3 +39,16 @@ public:
 
     virtual void Update(_In_ FLOAT deltaTime) override;
 };
+
+class AnotherCube : public BaseCube
+{
+public:
+    AnotherCube(const std::filesystem::path& textureFilePath);
+    AnotherCube(const AnotherCube& other) = delete;
+    AnotherCube(AnotherCube&& other) = delete;
+    AnotherCube& operator=(const AnotherCube& other) = delete;
+    AnotherCube& operator=(AnotherCube&& other) = delete;
+    ~AnotherCube() = default;
+
+    virtual void Update(_In_ FLOAT deltaTime) override;
+};

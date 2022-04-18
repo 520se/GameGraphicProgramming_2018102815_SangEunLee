@@ -258,11 +258,6 @@ namespace library
             return hr;
         }
 
-        CBChangeOnResize cr;
-        cr.Projection = XMMatrixTranspose(m_projection);
-        m_immediateContext->UpdateSubresource(m_cbChangeOnResize.Get(), 0, nullptr, &cr, 0, 0);
-
-        
         for (auto it = m_pixelShaders.begin(); it != m_pixelShaders.end(); it++) {
             hr = it->second->Initialize(m_d3dDevice.Get());
 
@@ -290,12 +285,16 @@ namespace library
             }
         }
 
+        CBChangeOnResize cr;
+        m_projection = XMMatrixPerspectiveFovLH(XM_PIDIV2, width / (FLOAT)height, 0.01f, 100.0f);
+        cr.Projection = XMMatrixTranspose(m_projection);
+        m_immediateContext->UpdateSubresource(m_cbChangeOnResize.Get(), 0, nullptr, &cr, 0, 0);
+        
 
         // Set primitive topology
         m_immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-        // Initialize the projection matrix
-        m_projection = XMMatrixPerspectiveFovLH(XM_PIDIV2, width / (FLOAT)height, 0.01f, 100.0f);
+        m_camera.Initialize(m_d3dDevice.Get());
 
         return S_OK;
     }

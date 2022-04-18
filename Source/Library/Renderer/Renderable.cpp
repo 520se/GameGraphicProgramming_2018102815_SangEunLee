@@ -19,17 +19,16 @@ namespace library
       TODO: Renderable::Renderable definition (remove the comment)
     --------------------------------------------------------------------*/
     Renderable::Renderable(_In_ const std::filesystem::path& textureFilePath)
-    {
-        m_vertexBuffer;
-        m_indexBuffer;
-        m_constantBuffer;
-        m_textureRV;
-        m_samplerLinear;
-        m_vertexShader;
-        m_pixelShader;
-        m_textureFilePath;
-        m_world;
-    }
+        : m_vertexBuffer()
+        , m_indexBuffer()
+        , m_constantBuffer()
+        , m_textureRV()
+        , m_samplerLinear()
+        , m_vertexShader()
+        , m_pixelShader()
+        , m_textureFilePath(textureFilePath)
+        , m_world()
+        {}
 
     /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
       Method:   Renderable::initialize

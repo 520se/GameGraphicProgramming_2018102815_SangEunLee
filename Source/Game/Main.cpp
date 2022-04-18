@@ -16,7 +16,6 @@
 #include <memory>
 #include <source_location>
 
-#include "Cube/SideCube.h"
 #include "Cube/Cube.h"
 #include "Game/Game.h"
 

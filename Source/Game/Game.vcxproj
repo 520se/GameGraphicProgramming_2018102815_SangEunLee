@@ -15,7 +15,9 @@
     <ClCompile Include="Cube\CenterCube.cpp" />
     <ClCompile Include="Cube\Cube.cpp" />
     <ClCompile Include="Cube\MyCube.cpp" />
+    <ClCompile Include="Cube\RotatingCube.cpp" />
     <ClCompile Include="Cube\SideCube.cpp" />
+    <ClCompile Include="Light\RotatingPointLight.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -23,7 +25,9 @@
     <ClInclude Include="Cube\CenterCube.h" />
     <ClInclude Include="Cube\Cube.h" />
     <ClInclude Include="Cube\MyCube.h" />
+    <ClInclude Include="Cube\RotatingCube.h" />
     <ClInclude Include="Cube\SideCube.h" />
+    <ClInclude Include="Light\RotatingPointLight.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\PS.hlsl">
@@ -40,7 +44,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\Shaders.fxh" />
+    <None Include="Shaders\PhongShaders.fxh" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

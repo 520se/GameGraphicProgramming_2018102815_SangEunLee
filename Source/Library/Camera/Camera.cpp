@@ -25,7 +25,7 @@ namespace library
         m_cameraForward = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
         m_cameraRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
         m_cameraUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-        m_eye;
+        m_eye = position;
         m_at;
         m_up;
         m_rotation;
@@ -177,9 +177,7 @@ namespace library
 
       Modifies: [m_cbChangeOnCameraMovement].
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-    /*--------------------------------------------------------------------
-      TODO: Camera::Initialize definition (remove the comment)
-    --------------------------------------------------------------------*/
+
     HRESULT Camera::Initialize(_In_ ID3D11Device* pDevice)
     {
         D3D11_BUFFER_DESC bd = {};

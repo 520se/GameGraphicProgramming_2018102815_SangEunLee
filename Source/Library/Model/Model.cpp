@@ -16,9 +16,12 @@ namespace library
 
       Modifies: [m_filePath, m_aVertices, m_aIndices].
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-    /*--------------------------------------------------------------------
-      TODO: Model::Model definition (remove the comment)
-    --------------------------------------------------------------------*/
+    Model::Model(_In_ const std::filesystem::path& filePath)
+        : Renderable(XMFLOAT4(1.0, 1.0, 1.0, 1.0))
+        , m_filePath(filePath)
+        , m_aVertices()
+        , m_aIndices()
+    {}
 
     /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
       Method:   Model::Initialize
@@ -116,9 +119,20 @@ namespace library
                   Pointer to an assimp scene object that contains the 
                   mesh information
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-    /*--------------------------------------------------------------------
-      TODO: Model::countVerticesAndIndices definition (remove the comment)
-    --------------------------------------------------------------------*/
+    void Model::countVerticesAndIndices(_Inout_ UINT& uOutNumVertices, _Inout_ UINT& uOutNumIndices,
+        _In_ const aiScene* pScene)
+    {
+        for (UINT i = 0u; i < m_aMeshes.size(); ++i)
+        {
+            m_aMeshes[i].uMaterialIndex = pScene->mMeshes[i]->mMaterialIndex;
+            m_aMeshes[i].uNumIndices = pScene->mMeshes[i]->mNumFaces * 3u;
+            m_aMeshes[i].uBaseIndex = uOutNumIndices;
+            m_aMeshes[i].uBaseVertex = uOutNumVertices;
+
+            uOutNumIndices += m_aMeshes[i].uNumIndices;
+            uOutNumVertices += pScene->mMeshes[i]->mNumVertices;
+        }
+    }
 
     /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
       Method:   Model::getVertices
@@ -182,9 +196,42 @@ namespace library
       Returns:  HRESULT
                   Status code
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-    /*--------------------------------------------------------------------
-      TODO: Model::initFromScene definition (remove the comment)
-    --------------------------------------------------------------------*/
+    HRESULT Model::initFromScene(_In_ ID3D11Device* pDevice, _In_ ID3D11DeviceContext* pImmediateContext,
+        _In_ const aiScene* pScene, _In_ const std::filesystem::path& filePath)
+    {
+        UINT numVertices = 0u;
+        UINT numIndices = 0u;
+
+        // resize the meshes vector and materials vector accordingly
+        m_aMaterials.resize(pScene->mNumMaterials);
+        m_aMeshes.resize(pScene->mNumMeshes);
+
+        // Load the mesh information to get the total number of vertices / indices (countVerticesAndIndices)
+        countVerticesAndIndices(numVertices, numIndices, pScene);
+
+        // Reserve spaces for the vertices and indices data (reserveSpace)
+        reserveSpace(numVertices, numIndices);
+
+        // Initialize the meshes (initAllMeshes)
+        // Initialize the materials(initMaterials)
+        // Initialize the buffers(initialize)
+        initAllMeshes(pScene);
+
+        HRESULT hr = S_OK;
+        hr = initMaterials(pDevice, pImmediateContext, pScene, filePath);
+        if (FAILED(hr))
+        {
+            return hr;
+        }
+
+        hr = initialize(pDevice, pImmediateContext);
+        if (FAILED(hr))
+        {
+            return hr;
+        }
+
+        return S_OK;
+    }
 
     /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
       Method:   Model::initMaterials
@@ -235,9 +282,42 @@ namespace library
       Args:     const aiMesh* pMesh
                   Point to an assimp mesh object
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-    /*--------------------------------------------------------------------
-      TODO: Model::initSingleMesh definition (remove the comment)
-    --------------------------------------------------------------------*/
+    void Model::initSingleMesh(_In_ const aiMesh* pMesh)
+    {
+        const aiVector3D zero3d(0.0f, 0.0f, 0.0f);
+
+        for (UINT i = 0u; i < pMesh->mNumVertices; ++i)
+        {
+            const aiVector3D& position = pMesh->mVertices[i];
+            const aiVector3D& normal = pMesh->mNormals[i];
+            const aiVector3D& texCoord = pMesh->HasTextureCoords(0u) ? pMesh->mTextureCoords[0][i] : zero3d;
+
+            m_aVertices.push_back
+            (
+                SimpleVertex
+                {
+                    .Position = XMFLOAT3(position.x, position.y, position.z),
+                    .TexCoord = XMFLOAT2(texCoord.x, texCoord.y),
+                    .Normal = XMFLOAT3(normal.x, normal.y, normal.z)
+                }
+            );
+        }
+
+        for (UINT i = 0u; i < pMesh->mNumFaces; ++i)
+        {
+            const aiFace& face = pMesh->mFaces[i];
+            assert(face.mNumIndices == 3u);
+            WORD aIndices[3] =
+            {
+                static_cast<WORD>(face.mIndices[0]),
+                static_cast<WORD>(face.mIndices[1]),
+                static_cast<WORD>(face.mIndices[2]),
+            };
+            m_aIndices.push_back(aIndices[0]);
+            m_aIndices.push_back(aIndices[1]);
+            m_aIndices.push_back(aIndices[2]);
+        }
+    }
 
     /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
       Method:   Model::loadDiffuseTexture
@@ -414,7 +494,9 @@ namespace library
                 UINT uNumIndices
                   Number of indices
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-    /*--------------------------------------------------------------------
-      TODO: Model::reserveSpace definition (remove the comment)
-    --------------------------------------------------------------------*/
+    void Model::reserveSpace(_In_ UINT uNumVertices, _In_ UINT uNumIndices)
+    {
+        m_aVertices.reserve(uNumVertices);
+        m_aIndices.reserve(uNumIndices);
+    }
 }

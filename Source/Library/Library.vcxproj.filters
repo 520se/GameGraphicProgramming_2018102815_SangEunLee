@@ -54,7 +54,7 @@
     <ClCompile Include="Texture\WICTextureLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\게임그래픽프로그래밍(강형엽)\GameGraphicsProgrammingStarterPack-main (7)\GameGraphicsProgrammingStarterPack-main\Lab07\Library\Model\Model.cpp">
+    <ClCompile Include="Model\Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

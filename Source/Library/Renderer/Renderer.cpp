@@ -483,6 +483,8 @@ namespace library
         {
             m_aPointLights[i]->Update(deltaTime);
         }
+
+        m_camera.Update(deltaTime);
     }
 
     /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
@@ -545,8 +547,15 @@ namespace library
 
             if (it->second->HasTexture())
             {
-                m_immediateContext->PSSetShaderResources(0, 1, it->second->GetTextureResourceView().GetAddressOf());
-                m_immediateContext->PSSetSamplers(0, 1, it->second->GetSamplerState().GetAddressOf());
+                for (UINT i = 0; i < it->second->GetNumMeshes(); ++i)
+                {
+                    UINT materialIndex = it->second->GetMesh(i).uMaterialIndex;
+                    m_immediateContext->PSSetShaderResources(0, 1, it->second->GetMaterial(materialIndex).pDiffuse->GetTextureResourceView().GetAddressOf());
+                    m_immediateContext->PSSetSamplers(0, 1, it->second->GetMaterial(materialIndex).pDiffuse->GetSamplerState().GetAddressOf());
+                    m_immediateContext->DrawIndexed(it->second->GetMesh(i).uNumIndices, it->second->GetMesh(i).uBaseIndex, it->second->GetMesh(i).uBaseVertex);
+
+
+                }
             }
 
             m_immediateContext->DrawIndexed(it->second->GetNumIndices(), 0, 0);

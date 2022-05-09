@@ -1,7 +1,7 @@
 #include "Cube/BaseCube.h"
 
-BaseCube::BaseCube(_In_ const std::filesystem::path& textureFilePath)
-    : Renderable(textureFilePath)
+BaseCube::BaseCube(_In_ const std::filesystem::path& texturefilePath)
+    : Renderable(XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f))
 {
 }
 

@@ -110,7 +110,7 @@
     <ClInclude Include="Texture\WICTextureLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\게임그래픽프로그래밍(강형엽)\GameGraphicsProgrammingStarterPack-main (7)\GameGraphicsProgrammingStarterPack-main\Lab07\Library\Model\Model.h">
+    <ClInclude Include="Model\Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

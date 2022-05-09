@@ -554,7 +554,6 @@ namespace library
                     m_immediateContext->PSSetSamplers(0, 1, it->second->GetMaterial(materialIndex).pDiffuse->GetSamplerState().GetAddressOf());
                     m_immediateContext->DrawIndexed(it->second->GetMesh(i).uNumIndices, it->second->GetMesh(i).uBaseIndex, it->second->GetMesh(i).uBaseVertex);
 
-
                 }
             }
 
@@ -582,16 +581,21 @@ namespace library
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
     HRESULT Renderer::SetVertexShaderOfRenderable(_In_ PCWSTR pszRenderableName, _In_ PCWSTR pszVertexShaderName)
     {
-        if (m_renderables.contains(pszRenderableName))
-        {
-            m_renderables.at(pszRenderableName)->SetVertexShader(m_vertexShaders.at(pszVertexShaderName));
-            return S_OK;
-        }
-
-        else
+        auto it_renderable = m_renderables.find(pszRenderableName);
+        if (it_renderable == m_renderables.end())
         {
             return E_FAIL;
         }
+
+        auto it_vertexshader = m_vertexShaders.find(pszVertexShaderName);
+        if (it_vertexshader == m_vertexShaders.end())
+        {
+            return E_FAIL;
+        }
+
+        it_renderable->second->SetVertexShader(it_vertexshader->second);
+        return S_OK;
+
     }
 
     /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
@@ -611,16 +615,21 @@ namespace library
     M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
     HRESULT Renderer::SetPixelShaderOfRenderable(_In_ PCWSTR pszRenderableName, _In_ PCWSTR pszPixelShaderName)
     {
-        if (m_renderables.contains(pszRenderableName))
-        {
-            m_renderables.at(pszRenderableName)->SetPixelShader(m_pixelShaders.at(pszPixelShaderName));
-            return S_OK;
-        }
-
-        else
+        auto it_renderable = m_renderables.find(pszRenderableName);
+        if (it_renderable == m_renderables.end())
         {
             return E_FAIL;
         }
+            
+        auto it_pixelshader = m_pixelShaders.find(pszPixelShaderName);
+        if (it_pixelshader == m_pixelShaders.end())
+        {
+            return E_FAIL;
+        }
+            
+        it_renderable->second->SetPixelShader(it_pixelshader->second);
+        return S_OK;
+
     }
 
     /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M

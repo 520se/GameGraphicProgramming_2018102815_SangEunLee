@@ -133,7 +133,7 @@ float4 PSPhong(PS_PHONG_INPUT input) : SV_TARGET
     float3 ambient = float3(0.0f, 0.0f, 0.1f);
     float3 diffuse = float3(0.0f, 0.0f, 0.0f);
     float3 specular = float3(0.0f, 0.0f, 0.0f);
-    float3 viewDirection = normalize(CameraPosition.xyz - input.World);
+	float3 viewDirection = normalize(CameraPosition.xyz - input.WorldPosition);
     float4 color = txDiffuse.Sample(samLinear, input.TexCoord);
 
 

@@ -47,13 +47,13 @@ namespace library
     {
         HRESULT hr = S_OK;
 
-        hr = initialize(pDevice, pImmediateContext);
+        hr = initializeInstance(pDevice);
         if (FAILED(hr))
         {
             return hr;
         }
 
-        hr = initializeInstance(pDevice);
+        hr = initialize(pDevice, pImmediateContext);
         if (FAILED(hr))
         {
             return hr;

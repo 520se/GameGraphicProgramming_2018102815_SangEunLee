@@ -4,13 +4,16 @@
 // Copyright (c) Kyung Hee University.
 //--------------------------------------------------------------------------------------
 
-#define NUM_LIGHTS (2)
+#ifndef NUM_LIGHTS
+#define NUM_LIGHTS 2
+#endif
 
 //--------------------------------------------------------------------------------------
 // Global Variables
 //--------------------------------------------------------------------------------------
 Texture2D txDiffuse : register(t0);
 SamplerState samLinear : register(s0);
+
 
 //--------------------------------------------------------------------------------------
 // Constant Buffer Variables
@@ -22,19 +25,23 @@ SamplerState samLinear : register(s0);
 C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C-C*/
 cbuffer cbChangeOnCameraMovement : register(b0)
 {
-    matrix View;
-    float4 CameraPosition;
-}
+
+	matrix View;
+	float4 CameraPosition;
+
+};
 
 /*C+C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C
   Cbuffer:  cbChangeOnResize
 
   Summary:  Constant buffer used for projection transformation
 C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C-C*/
-cbuffer cbChangeOnResize : register(b1)
+cbuffer CBChangeOnResize : register(b1)
 {
-    matrix Projection;
+
+	matrix Projection;
 };
+
 
 /*C+C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C
   Cbuffer:  cbChangesEveryFrame
@@ -44,9 +51,10 @@ cbuffer cbChangeOnResize : register(b1)
 C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C-C*/
 cbuffer cbChangesEveryFrame : register(b2)
 {
-    matrix World;
-    float4 OutputColor;
+	matrix World;
+	float4 OutputColor;
 };
+
 
 /*C+C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C
   Cbuffer:  cbLights
@@ -55,9 +63,10 @@ cbuffer cbChangesEveryFrame : register(b2)
 C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C-C*/
 cbuffer cbLights : register(b3)
 {
-    float4 LightPositions[NUM_LIGHTS];
-    float4 LightColors[NUM_LIGHTS];
+	float4 LightPositions[NUM_LIGHTS];
+	float4 LightColors[NUM_LIGHTS];
 };
+
 
 //--------------------------------------------------------------------------------------
 /*C+C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C
@@ -68,10 +77,12 @@ cbuffer cbLights : register(b3)
 C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C-C*/
 struct VS_INPUT
 {
-    float4 Position : POSITION;
-    float2 TexCoord : TEXCOORD0;
-    float3 Normal : NORMAL;
-    row_major matrix Transform : INSTANCE_TRANSFORM;
+	float4 Position : POSITION;
+	float2 TexCoord : TEXCOORD0;
+	float3 Normal : NORMAL;
+	row_major matrix Transform : INSTANCE_TRANSFORM;
+
+
 };
 
 /*C+C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C
@@ -82,10 +93,11 @@ struct VS_INPUT
 C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C-C*/
 struct PS_INPUT
 {
-    float4 Position : SV_POSITION;
-    float2 TexCoord : TEXCOORD0;
-    float3 Normal : NORMAL;
-    float3 WorldPosition : WORLDPOS;
+	float4 Position : SV_POSITION;
+	float2 TexCoord : TEXCOORD0;
+	float3 Normal : NORMAL;
+	float3 WorldPosition : WORLDPOS;
+
 };
 
 //--------------------------------------------------------------------------------------
@@ -93,36 +105,48 @@ struct PS_INPUT
 //--------------------------------------------------------------------------------------
 PS_INPUT VSVoxel(VS_INPUT input)
 {
-    PS_INPUT output = (PS_INPUT)0;
-    output.Position = mul(input.Position, input.Transform);
-    output.Position = mul(input.Position, World);
-    output.Position = mul(output.Position, View);
-    output.Position = mul(output.Position, Projection);
+	PS_INPUT output = (PS_INPUT) 0;
+	output.Position = mul(input.Position, input.Transform);
+	output.Position = mul(output.Position, World);
+	output.WorldPosition = output.Position;
+	output.Position = mul(output.Position, View);
+	output.Position = mul(output.Position, Projection);
+    
+    
+	output.TexCoord = input.TexCoord;
+	output.Normal = mul(float4(input.Normal, 0.0f), input.Transform).xyz;
+	output.Normal = mul(float4(output.Normal, 0.0f), World).xyz;
+    
+    //output.Color = OutputColor;
+	return output;
 
-    output.Normal = normalize(mul(float4(input.Normal, 1), World).xyz);
-    output.WorldPosition = mul(input.Position, World);
-    output.TexCoord = input.TexCoord;
-
-    return output;
 }
+
 
 //--------------------------------------------------------------------------------------
 // Pixel Shader
 //--------------------------------------------------------------------------------------
-float4 PSVoxel(PS_INPUT input) : SV_TARGET
+float4 PSVoxel(PS_INPUT input) : SV_Target
 {
-    float3 ambient = float3(0.0f, 0.0f, 0.0f);
-    for (uint i = 0; i < NUM_LIGHTS; ++i)
-    {
-        ambient += float3(0.1f, 0.1f, 0.1f) * LightColors[i].xyz;
-    }
+	float3 diffuse = float3(0.0f, 0.0f, 0.0f);
+	float3 ambience = float3(0.1f, 0.1f, 0.1f);
+	float3 ambienceTerm = float3(0.0f, 0.0f, 0.0f);
+	float3 specular = float3(0.0f, 0.0f, 0.0f);
+	float3 viewDirection = normalize(input.WorldPosition - CameraPosition.xyz);
+    
+	for (uint i = 0; i < NUM_LIGHTS; ++i)
+	{
+		ambienceTerm += (ambience) * LightColors[i].xyz;
+        
+		float3 lightDirection = normalize(input.WorldPosition - LightPositions[i].xyz);
+		float lambertianTerm = dot(normalize(input.Normal), -lightDirection);
+		diffuse += max(lambertianTerm, 0.0f) * LightColors[i].xyz;
+        
+		float3 reflectDirection = normalize(reflect(lightDirection, input.Normal));
+		specular += pow(max(dot(-viewDirection, reflectDirection), 0.0f), 20.0f) * LightColors[i].xyz;
+	}
+    
+	
+	return float4(saturate(diffuse + specular + ambience), 1.0f) * OutputColor;
 
-    float3 diffuse = float3(0.0f, 0.0f, 0.0f);
-    for (uint i = 0; i < NUM_LIGHTS; ++i)
-    {
-        float3 lightDirection = normalize(LightPositions[i].xyz - input.WorldPosition);
-        diffuse += saturate(dot(input.Normal, -lightDirection)) * LightColors[i].xyz;
-    }
-
-    return float4(ambient + diffuse, 1.0f) * OutputColor;
 }
